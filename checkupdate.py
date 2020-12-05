@@ -123,7 +123,8 @@ def main():
                             datas[comic_title] = latest_chapter_title  # 更新本地章节
 
                             with open(template_html, encoding='utf-8') as f:
-                                tx = f.read().format(url=comic_url, new_data=new_data, old_data=old_data)  # 构造邮件内容
+                                tx = f.read().format(url=comic_url, new_data=new_data, old_data=old_data,
+                                                     comic_title=comic_title)  # 构造邮件内容
                                 content.append(tx)
                             print(f"{comic_title} ---->{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())} 更新")
                             # send_mail.sendEmail(content=tx, title=f'{website_platform}平台-{comic_title} 已更新',
@@ -138,8 +139,8 @@ def main():
         except TypeError as e:
             print(e)
             print(traceback.format_exc())
-
-    send_mail.sendEmail(content=''.join(content), title=f'漫画更新通知', s='\n推送更新')  # 发送邮件, 推送更新
+    if content:
+        send_mail.sendEmail(content=''.join(content), title=f'漫画更新通知', s='\n推送更新')  # 发送邮件, 推送更新
     del send_mail
     tm = time.localtime()
     print(time.strftime('%Y-%m-%d %H:%M:%S', tm).center(65, '-'))
