@@ -140,7 +140,7 @@ def main():
             print(e)
             print(traceback.format_exc())
     if content:
-        send_mail.sendEmail(content=''.join(content), title=f'漫画更新通知', s='\n推送更新')  # 发送邮件, 推送更新
+        send_mail.sendEmail(content=''.join(content), title=f'漫画更新通知(ID:{time.time()})', s='\n推送更新')  # 发送邮件, 推送更新
     del send_mail
     tm = time.localtime()
     print(time.strftime('%Y-%m-%d %H:%M:%S', tm).center(65, '-'))
