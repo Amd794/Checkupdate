@@ -91,17 +91,18 @@ def main():
             fw.write('{}')
     if not os.access(check_update_comic_json, os.F_OK):
         print(f'-----{check_update_comic_json}不存在------')
+        example_config = {
+            'comic_18': {
+            },
+            'kanleying': {
+                # 可配置符合这一类规则（选择器可获取到数据）的漫画平台
+                '不一样的她': 'https://www.feixuemh.com/cartoon/3665',
+            },
+            'mm820': {
+            }
+        }
         with open(check_update_comic_json, 'w', encoding='utf-8') as fw:
-            fw.write('''{
-  'comic_18': {
-  },
-  'kanleying': {
-    # 可配置符合这一类规则（选择器可获取到数据）的漫画平台
-    '不一样的她': 'https://www.feixuemh.com/cartoon/3665',
-  },
-  'mm820': {
-  }
-}''')
+            fw.write(json.dumps(example_config, ensure_ascii=False, indent=4, separators=(', ', ': ')))
 
     with open(data_json, encoding='utf-8') as fr:  # 读取本地漫画状态
         datas = json.load(fr)
