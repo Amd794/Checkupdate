@@ -22,7 +22,7 @@ from SendEmail import SendEmail
 import os
 
 
-def get_response(url, error_file_path='.', max_count=5, timeout=15, encoding='utf-8', name=''):
+def get_response(url, error_file_path='.', max_count=5, timeout=60, encoding='utf-8', name=''):
     header = {
         'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.67 Mobile Safari/537.36 Edg/87.0.664.55',
     }
@@ -67,17 +67,19 @@ class Comic(object):
 
     def get_chapter_status(self, website_platform, comic_url):
         r = get_response(comic_url)
-        pq = PyQuery(r.text)
-        try:
-            host_url = re.match('https?://\w+\.(.*?)\.\w+/', comic_url).group()
-        except AttributeError:
-            host_url = re.match('https?://(.*?)\.\w+/', comic_url).group()
-        chapter_title_selector = self.css_selector.get(website_platform)['chapter_title_selector']
-        chapter_url_selector = self.css_selector.get(website_platform)['chapter_url_selector']
-        latest_chapter_title = pq(chapter_title_selector).text()
-        latest_chapter_url = pq(chapter_url_selector).attr('href')
-        latest_chapter_url = host_url + latest_chapter_url
-        return latest_chapter_title, latest_chapter_url
+        if r:
+            pq = PyQuery(r.text)
+            try:
+                host_url = re.match('https?://\w+\.(.*?)\.\w+/', comic_url).group()
+            except AttributeError:
+                host_url = re.match('https?://(.*?)\.\w+/', comic_url).group()
+            chapter_title_selector = self.css_selector.get(website_platform)['chapter_title_selector']
+            chapter_url_selector = self.css_selector.get(website_platform)['chapter_url_selector']
+            latest_chapter_title = pq(chapter_title_selector).text()
+            latest_chapter_url = pq(chapter_url_selector).attr('href')
+            latest_chapter_url = host_url + latest_chapter_url
+            return latest_chapter_title, latest_chapter_url
+        return None
 
 
 def main():
@@ -141,7 +143,7 @@ def main():
             print(e)
             print(traceback.format_exc())
     if content:
-        send_mail.sendEmail(content=''.join(content), title=f'漫画更新通知(ID:{time.time()})', s='\n推送更新')  # 发送邮件, 推送更新
+        send_mail.sendEmail(content=''.join(content), title=f'漫画更新通知(ID:{int(time.time())}', s='\n推送更新')  # 发送邮件, 推送更新
     del send_mail
     tm = time.localtime()
     print(time.strftime('%Y-%m-%d %H:%M:%S', tm).center(65, '-'))
