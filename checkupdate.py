@@ -114,9 +114,11 @@ def main():
     comic_obj = Comic()
     content = []
     fail_url = []  # 出错的url
+    total = 0
     for website_platform, comic in DETAIL_DICT.items():
         try:
             for comic_title, comic_url in comic.items():
+                total += 1
                 try:
                     obj = comic_obj.get_chapter_status(website_platform, comic_url)  # 获取漫画最新更新状态
                     if obj:
@@ -147,7 +149,7 @@ def main():
             print(traceback.format_exc())
     if content:
         send_mail.sendEmail(content=''.join(content),
-                            title=f'漫画更新(total:{len(DETAIL_DICT)}, update:{len(content)}, fail:{len(fail_url)})',
+                            title=f'漫画更新(total:{total}, update:{len(content)}, fail:{len(fail_url)})',
                             s='\n推送更新')  # 发送邮件, 推送更新
     del send_mail
     tm = time.localtime()

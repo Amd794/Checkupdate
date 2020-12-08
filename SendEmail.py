@@ -97,8 +97,11 @@ class SendEmail():
         self.path = path
 
     def __del__(self):
-        print('退出成功')
-        self.server.quit()
+        try:
+            print('退出成功')
+            self.server.quit()
+        except smtplib.SMTPServerDisconnected:
+            print('未连接到任何SMTP服务器')
 
     # TODO 发送的邮件类型
     def __emailType(self):
@@ -129,6 +132,8 @@ class SendEmail():
             print(traceback.format_exc())
         except smtplib.SMTPDataError:
             print(traceback.format_exc())
+        except smtplib.SMTPSenderRefused:
+            print('发件人地址被拒绝')
 
 
 if __name__ == '__main__':
