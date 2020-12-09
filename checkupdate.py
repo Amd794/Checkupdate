@@ -22,7 +22,7 @@ from SendEmail import SendEmail
 import os
 
 
-def get_response(url, error_file_path='.', max_count=3, timeout=30, encoding='utf-8', name=''):
+def get_response(url, error_file_path='.', max_count=3, timeout=60, encoding='utf-8', name=''):
     header = {
         'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.67 Mobile Safari/537.36 Edg/87.0.664.55',
     }
@@ -49,7 +49,7 @@ class Comic(object):
     def __init__(self):
         similar_selector_1 = '#detail-list-select > li:last'
         similar_selector_2 = '#chapterList > li:last > a'
-        similar_selector_3 = '.panel-body .row div a:last'
+        similar_selector_3 = '.nav-tab-content .btn-toolbar a:last'
         self.css_selector = {
             'kanleying': {
                 'chapter_title_selector': similar_selector_1,
@@ -149,7 +149,7 @@ def main():
             print(traceback.format_exc())
     if content:
         send_mail.sendEmail(content=''.join(content),
-                            title=f'漫画更新(total:{total}, update:{len(content)}, fail:{len(fail_url)})',
+                            title=f'漫画更新(total:{total}-update:{len(content)}-fail:{len(fail_url)})',
                             s='\n推送更新')  # 发送邮件, 推送更新
     del send_mail
     tm = time.localtime()
