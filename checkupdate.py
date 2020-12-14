@@ -22,7 +22,7 @@ from SendEmail import SendEmail
 import os
 
 
-def get_response(url, error_file_path='.', max_count=3, timeout=60, encoding='utf-8', name=''):
+def get_response(url, error_file_path='.', max_count=3, timeout=25, encoding='utf-8', name=''):
     header = {
         'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.67 Mobile Safari/537.36 Edg/87.0.664.55',
     }
