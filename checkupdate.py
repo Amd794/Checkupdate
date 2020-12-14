@@ -112,7 +112,6 @@ def main():
         json.dump(datas, fw, ensure_ascii=False, indent=4, separators=(', ', ': '))
     with open(check_update_comic_json, encoding='utf-8') as f:  # 获取监测的漫画
         DETAIL_DICT = eval(f.read())
-    send_mail = SendEmail(emtype='htmlcontent')
     comic_obj = Comic()
     content = []
     fail_url = []  # 出错的url
@@ -135,8 +134,6 @@ def main():
                                                      comic_title=comic_title)  # 构造邮件内容
                                 content.append(tx)
                             print(f"{comic_title} ---->{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())} 更新")
-                            # send_mail.sendEmail(content=tx, title=f'{website_platform}平台-{comic_title} 已更新',
-                            #                     s=comic_title)  # 发送邮件, 推送更新
 
                             with open(data_json, 'w', encoding='utf-8') as fw:  # 存储更新后的状态
                                 json.dump(datas, fw, ensure_ascii=False, indent=4, separators=(', ', ': '))
@@ -150,10 +147,11 @@ def main():
             print(e)
             print(traceback.format_exc())
     if content:
+        send_mail = SendEmail(emtype='htmlcontent')
         send_mail.sendEmail(content=''.join(content),
                             title=f'漫画更新(total:{total}-update:{len(content)}-fail:{len(fail_url)})',
-                            s='\n推送更新')  # 发送邮件, 推送更新
-    del send_mail
+                            s='推送更新')  # 发送邮件, 推送更新
+        del send_mail
     tm = time.localtime()
     print(time.strftime('%Y-%m-%d %H:%M:%S', tm).center(65, '-'))
     print()
