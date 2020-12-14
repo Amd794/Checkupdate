@@ -133,7 +133,7 @@ class SendEmail():
         except smtplib.SMTPDataError:
             print(traceback.format_exc())
         except smtplib.SMTPSenderRefused:
-            print('发件人地址被拒绝')
+            print(traceback.format_exc())
 
 
 if __name__ == '__main__':
@@ -141,7 +141,5 @@ if __name__ == '__main__':
     content = '<h1>测试html</h1>'
     title = '测试'
     sendEmail = SendEmail('htmlcontent')
-    for i in range(5):
-        sendEmail.sendEmail(content, title)
-        time.sleep(2 * 2)
+    sendEmail.sendEmail(content, title)
     del sendEmail
