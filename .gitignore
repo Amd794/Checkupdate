@@ -152,5 +152,6 @@ error_urls.txt
 test/
 check_update_comic.json
 datas.json
+datas.json.bak
 local_settings.py
 .gitignore

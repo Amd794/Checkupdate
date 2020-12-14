@@ -108,6 +108,8 @@ def main():
 
     with open(data_json, encoding='utf-8') as fr:  # 读取本地漫画状态
         datas = json.load(fr)
+    with open(f'{data_json}.bak', 'w', encoding='utf-8') as fw:  # 备份本地漫画状态，防止推送更新失败。
+        json.dump(datas, fw, ensure_ascii=False, indent=4, separators=(', ', ': '))
     with open(check_update_comic_json, encoding='utf-8') as f:  # 获取监测的漫画
         DETAIL_DICT = eval(f.read())
     send_mail = SendEmail(emtype='htmlcontent')
