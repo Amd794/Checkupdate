@@ -48,7 +48,7 @@ def get_response(url, error_file_path='.', max_count=3, timeout=25, encoding='ut
 class Comic(object):
     def __init__(self):
         similar_selector_1 = '#detail-list-select > li:last'
-        similar_selector_2 = '#chapterList > li:last > a'
+        similar_selector_2 = '.chapterlist li:last a'
         similar_selector_3 = '.nav-tab-content .btn-toolbar a:last'
         self.css_selector = {
             'kanleying': {
@@ -114,6 +114,7 @@ def main():
         DETAIL_DICT = eval(f.read())
     comic_obj = Comic()
     content = []
+    update_url = []
     fail_url = []  # 出错的url
     total = 0
     for website_platform, comic in DETAIL_DICT.items():
@@ -121,7 +122,11 @@ def main():
             for comic_title, comic_url in comic.items():
                 total += 1
                 try:
-                    obj = comic_obj.get_chapter_status(website_platform, comic_url)  # 获取漫画最新更新状态
+                    try:
+                        obj = comic_obj.get_chapter_status(website_platform, comic_url)  # 获取漫画最新更新状态
+                    except TypeError:
+                        obj = None
+                        print(comic_title + '  TypeError')
                     if obj:
                         latest_chapter_title, latest_chapter_url = obj
                         new_data = latest_chapter_title  # 最新章节数据
@@ -133,6 +138,7 @@ def main():
                                 tx = f.read().format(url=comic_url, new_data=new_data, old_data=old_data,
                                                      comic_title=comic_title)  # 构造邮件内容
                                 content.append(tx)
+                            update_url.append(comic_url)  # 将更新的漫画链接添加都列表
                             print(f"{comic_title} ---->{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())} 更新")
 
                             with open(data_json, 'w', encoding='utf-8') as fw:  # 存储更新后的状态
@@ -147,7 +153,9 @@ def main():
             print(e)
             print(traceback.format_exc())
     if content:
-        send_mail = SendEmail(emtype='htmlcontent')
+        with open('mh_info.json', 'w', encoding='utf-8') as mf:
+            mf.write(str(update_url))
+        send_mail = SendEmail(emtype='htmlcontent', path='mh_info.json')
         send_mail.sendEmail(content=''.join(content),
                             title=f'漫画更新(total:{total}-update:{len(content)}-fail:{len(fail_url)})',
                             s='推送更新')  # 发送邮件, 推送更新
@@ -158,6 +166,7 @@ def main():
 
 
 if __name__ == '__main__':
+    #  nohup python -u checkupdate.py > checkupdate.log 2>&1 &
     while True:
         main()
         time.sleep(60 * 60 * 2)

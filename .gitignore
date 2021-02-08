@@ -155,3 +155,4 @@ datas.json
 datas.json.bak
 local_settings.py
 .gitignore
+mh_info.json
