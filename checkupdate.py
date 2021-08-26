@@ -153,9 +153,9 @@ def main():
             print(e)
             print(traceback.format_exc())
     if content:
-        with open('mh_info.json', 'w', encoding='utf-8') as mf:
+        with open('mh_info.txt', 'w', encoding='utf-8') as mf:
             mf.write(str(update_url))
-        send_mail = SendEmail(emtype='htmlcontent', path='mh_info.json')
+        send_mail = SendEmail(emtype='htmlcontent', path='mh_info.txt')
         send_mail.sendEmail(content=''.join(content),
                             title=f'漫画更新(total:{total}-update:{len(content)}-fail:{len(fail_url)})',
                             s='推送更新')  # 发送邮件, 推送更新
